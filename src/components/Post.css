@@ -1,0 +1,11 @@
+.post-card {
+    width: 18rem;
+    margin: .3rem;
+}
+
+@media only screen and (max-width: 480px){
+    .post-card {
+        width: 100%;
+        /* margin: .1rem; */
+    }
+}

@@ -1,24 +1,27 @@
 import { useState } from "react";
+import { like } from "../service/data-service";
 import "./Post.css";
-// https://stackoverflow.com/questions/42395034/how-to-display-binary-data-as-image-in-react
-function Post({ image, createdAt, autor, text, comments, initial_likes }) {
+function Post({ image, createdAt, autor, text, comments, initial_likes, id }) {
   const [likes, setLikes] = useState(initial_likes);
   return (
     <div>
       <div className="card post-card">
         <img
           className="card-img-top"
-          src={`data:image/jpeg;base64,${image}`}
+          src={image}
           alt={autor}
         />
         <div className="card-body">
           <div className="d-flex justify-content-between">
-            <span className="text-secondary">{createdAt}min ago</span>
+            {/* TODO: Implement years, months, days, hours and minutes friendly date diff */}
+            <span className="text-secondary">{((Date.now() - new Date(createdAt))/60000).toFixed(0)}min ago</span>
             <button
               type="button"
               className="btn btn-danger"
               onClick={() => {
                 setLikes(likes + 1);
+                like(id)
+                .then((resp) => {console.log(resp)});
               }}
             >
               <i className="bi bi-heart-fill"></i>&nbsp;

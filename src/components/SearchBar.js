@@ -6,7 +6,7 @@ function SearchBar({ value, onSearch }) {
         type="search"
         placeholder="Search"
         aria-label="Search"
-        text={value}
+        value={value}
         onChange={(event) => {
           onSearch(event.target.value);
         }}

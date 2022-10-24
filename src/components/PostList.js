@@ -1,6 +1,13 @@
+import { useEffect } from "react";
+import { getData } from "../service/data-service";
 import Post from "./Post";
 
-function PostList({ posts }) {
+function PostList({ posts, setPosts, search }) {
+  useEffect(() => {
+    getData().then((data) => {
+      setPosts(data?.filter((d) => d.text.includes(search)));
+    });
+  }, [search, setPosts]);
 
   return (
     <div className="d-flex flex-wrap justify-content-center pt-4">

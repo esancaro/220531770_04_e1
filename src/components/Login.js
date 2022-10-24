@@ -1,30 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { login } from "../service/data-service";
+import { Navigate } from 'react-router'
 
-function Login({ onLoginComplete }) {
-  const [error, setError] = useState(false);
+function Login(props) {
+  const [error, setError] = useState(null);
 
   function handleSubmit(event) {
     event.preventDefault();
     const form = event.target;
 
-    login(form.username.value, form.password.value)
-      .then((data) => {
-        if (data && data.token) {
-          onLoginComplete(true);
-          localStorage.setItem("token", data.token);
-        } else {
-          setError(true);
-        }
-      })
-      .catch((error) => {
-        setError(error);
-      });
+    login(form.username.value, form.password.value).then((data) => {
+      if (data && data.token) {
+        localStorage.setItem("token", data.token);
+        setError(false);
+      } else {
+        setError(true);
+      }
+    });
   }
 
   return (
     <div className="container">
-      {error === false ? null : (
+      {!error ? null : (
         <div className="alert alert-danger mt-3" role="alert">
           Invalid Email or Password
         </div>

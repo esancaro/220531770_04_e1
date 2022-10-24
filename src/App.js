@@ -1,80 +1,63 @@
 import "./App.css";
 import NavBar from "./components/NavBar";
-import { getData, getProfile } from "./service/data-service";
 import Profile from "./components/Profile";
-import PostList from "./components/PostList";
-import SearchBar from "./components/SearchBar";
-import { useState, useEffect } from "react";
 import Login from "./components/Login";
+import Home from "./screens/Home";
+import { useState } from "react";
+import { Route, Routes } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import Logout from "./components/Logout";
+
+const AuthLayout = () => {
+  // https://stackoverflow.com/questions/72535191/not-able-to-navigate-when-token-is-null-in-react-js
+  const location = useLocation();
+
+  const token = localStorage.getItem("token");
+
+  return token ? (
+    <Outlet />
+  ) : (
+    <Navigate
+      to="/login"
+      replace
+      state={{ from: location }} // pass current location to redirect back
+    />
+  );
+};
 
 const postInitialState = [];
 
 function App() {
-  const [section, setSection] = useState("index");
   const [posts, setPosts] = useState(postInitialState);
   const [search, setSearch] = useState("");
-  const [profileData, setProfileData] = useState({});
-  const [loginOk, setLoginOk] = useState(localStorage.token ? true : false);
 
-  function onLogoClick() {
-    setSection("index");
-  }
-
-  function onProfileClick() {
-    setSection("profile");
-  }
-
-  useEffect(() => {
-    getData().then((data) => {
-      setPosts(data?.filter((d) => d.text.includes(search)));
-    });
-  }, [search]);
-
-  useEffect(() => {
-    getProfile("6136944fcd79ba24707e2f82").then((data) => {
-      setProfileData(data);
-    });
-  }, []);
-
-  if (!loginOk) {
-    return <Login onLoginComplete={setLoginOk} />;
-  } else {
-    switch (section) {
-      case "profile":
-        return (
-          <div>
-            <header>
-              <NavBar
-                onLogoClick={onLogoClick}
-                onProfileClick={onProfileClick}
-              />
-            </header>
-            <section className="container">
-              <Profile
-                avatar={profileData?.avatar}
-                bio={profileData?.bio}
-                username={profileData?.username}
-              />
-            </section>
-          </div>
-        );
-      default:
-        return (
-          <div>
-            <header>
-              <NavBar
-                onLogoClick={onLogoClick}
-                onProfileClick={onProfileClick}
-              />
-            </header>
-            <section className="container">
-              <SearchBar value={search} onSearch={setSearch} />
-              <PostList posts={posts} />
-            </section>
-          </div>
-        );
-    }
-  }
+  return (
+    <div>
+      <header>
+        <NavBar />
+      </header>
+      <section className="container">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route element={<AuthLayout />}>
+            <Route
+              path="/"
+              element={
+                <Home
+                  search={search}
+                  setSearch={setSearch}
+                  posts={posts}
+                  setPosts={setPosts}
+                />
+              }
+            />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+        </Routes>
+      </section>
+    </div>
+  );
 }
 
 export default App;

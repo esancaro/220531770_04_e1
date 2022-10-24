@@ -2,17 +2,17 @@ import axios from "axios";
 const url = "https://three-points.herokuapp.com";
 
 //https://stackoverflow.com/questions/47216452/how-to-handle-401-authentication-error-in-axios-and-react
-axios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (error.response.status === 401) {
-      localStorage.removeItem("token");
-    }
-    return error;
-  }
-);
+// axios.interceptors.response.use(
+//   (response) => {
+//     return response;
+//   },
+//   (error) => {
+//     if (error.response.status === 401) {
+//       localStorage.removeItem("token");
+//     }
+//     return error;
+//   }
+// );
 
 export function getData() {
   return axios
@@ -32,7 +32,7 @@ export function getProfile(userId) {
 
 export function like(postId) {
   return axios
-    .get(`${url}/api/posts/${postId}/like`, {
+    .post(`${url}/api/posts/${postId}/like`, {
       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
     })
     .then((response) => response.data);

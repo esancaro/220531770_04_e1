@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { login } from "../service/data-service";
-import { Navigate } from 'react-router'
 
-function Login(props) {
+function Login() {
   const [error, setError] = useState(null);
 
   function handleSubmit(event) {
